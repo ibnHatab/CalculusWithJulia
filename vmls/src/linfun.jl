@@ -1,29 +1,32 @@
 module LinearFunction
 
 using Test
-using AbstractPlotting, Makie
 using LinearAlgebra
 
+# Superposition f(αx+βy) = αf(x) + βf(y)
+#
 # Homogenity  ∀ α, x, f(αx) = αf(x)
 # Additivity ∀ x, y, f(x+y) = f(x) + f(y)
-
+#
 # Afine f(αx + βy) = αf(x) + βf(y) and α + β = 1
+#
 
 f(x) = x[1] + x[2] - x[4]^2
 x = rand(4)
 f(x)
 
+
 a = [-2,0,1,-3]
 f(x) = a'*x
+
 x = [2,2,-1,1]; y = [0,1,-1,0];
-
 α = 1.5; β = -3.7;
-
 @test f(α*x+β*y) == α*f(x) + β*f(y)
 
 using Statistics
 avg(x) = (ones(length(x)) / length(x))'*x;
 @test avg(x) == mean(x)
+
 
 # Taylor
 f(x) = x[1] + exp(x[2]-x[1]);

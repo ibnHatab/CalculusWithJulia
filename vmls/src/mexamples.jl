@@ -1,25 +1,28 @@
 module MExamples
 
+using Test
+using AbstractPlotting, GLMakie
+using LinearAlgebra
 
-include("vmls.jl")
+include("src/vmls.jl")
 using .VMLS
 
-using Test
-using AbstractPlotting
+sc = scene3d()
+orts3d(sc)
 
-scene = Scene(resolution = (500,500))
+a = [ -1 1 -1
+      -1 3 -1
+       1 3 5 ]
+vector3d(sc, a)
 
-orts = Point3f0[[1,0,0], [0,1,0], [0,0,1]]
-arrows!(scene, fill(Point3f0(0), length(orts)), orts,
-        arrowcolor=:red,
-        arrowsize=0.1,
-        linecolor=:red)
+toAoA(a) = mapslices(x->[x], a, dims=2)[:]
+orta = gram_schmidt(toAoA(a))
+aa = hcat(orta...)
+vector3d(sc, aa, :blue)
 
-vector(p, color) = arrows!(scene, [Point3f0(0)], [p], arrowcolor=:red, arrowsize=0.1, linecolor=color)
+ang(aa[1,:], aa[2,:]) |> degree
+ang(a, aa)
 
-
-p = Point3f0(1,2,3)
-vector(p, :red)
 
 Scaling = 3 * eye(3)                  # Scaling
 ps = Scaling * p |> Point3f0

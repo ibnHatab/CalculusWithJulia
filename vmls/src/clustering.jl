@@ -5,8 +5,9 @@ export kmean
 using Statistics, Test
 using LinearAlgebra
 
-Jclust(x, reps, assignement) =
+function Jclust(x, reps, assignement)
     mean(norm(x[i] - reps[assignement[i]])^2 for i = 1:length(x))
+end
 
 x = [ [0,1], [1,0], [-1,1] ];
 reps = [ [1,1], [0,0] ];

@@ -6,10 +6,11 @@ the book **Vectors, Matrices, and Least Squares**.
 module VMLS
 
 
+using AbstractPlotting
 using LinearAlgebra
 using SparseArrays
 using DelimitedFiles
-export avg, rms, stdev, ang, correl_coef, eye, speye, kmeans, gram_schmidt
+export avg, rms, stdev, ang, correl_coef, eye, speye, kmeans, gram_schmidt, degree
 export diagonal, spdiagonal, vandermonde, toeplitz, linspace
 export confusion_matrix, row_argmax, one_hot, mols_solve, cls_solve
 export levenberg_marquardt, aug_lag_method
@@ -17,6 +18,8 @@ export house_sales_data, population_data, petroleum_consumption_data
 export vehicle_miles_data, temperature_data, iris_data, ozone_data
 export regularized_fit_data, portfolio_data, lq_estimation_data
 export orth_dist_reg_data, wikipedia_data
+export scene3d, orts3d, vector3d
+export toAoA
 
 """
     avg(x)
@@ -48,6 +51,13 @@ stdev(x) = rms(x .- avg(x))
 Returns the angle in radians between non-zero vectors `x` and `y`.
 """
 ang(x,y) = acos(x'*y  / (norm(x) * norm(y)))
+
+"""
+   degree(radians)
+
+Returns the angle in degree given one in radians.
+"""
+degree(r) = r * (360/(2*π))
 
 
 """
@@ -368,6 +378,30 @@ include("data/portfolio_data.jl")
 include("data/lq_estimation_data.jl")
 include("data/orth_dist_reg_data.jl")
 include("data/wikipedia_data.jl")
+
+
+scene3d() = Scene(resolution = (500,500))
+
+function orts3d(scene)
+    orts = Point3f0[[1,0,0], [0,1,0], [0,0,1]]
+    arrows!(scene, fill(Point3f0(0), length(orts)), orts,
+            arrowcolor=:red,
+            arrowsize=0.1,
+            linecolor=:red)
+end
+
+function vector3d(scene, p::Point3f0, color = :black)
+    arrows!(scene, [Point3f0(0)], [p], arrowcolor=:red, arrowsize=0.1, linecolor=color)
+end
+function vector3d(scene, ar::AbstractArray{T, 2}, color = :green) where T
+    n,m = size(ar)
+    for i = 1:n
+        p = ar[i,:] |> Point3f0
+        vector3d(scene, p, color)
+    end
+end
+
+toAoA(a) = mapslices(x->[x], a, dims=2)[:]
 
 
 end # module
